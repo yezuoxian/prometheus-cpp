@@ -72,7 +72,7 @@ script:
   - ctest -V -LE Benchmark
   - mkdir -p deploy
   - make DESTDIR=`pwd`/deploy install
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then pip install --user cpp-coveralls && coveralls --gcov gcov-8 --root .. --build-root . -E ".*/3rdparty/.*" -E ".*/_.*" -E ".*/tests/.*" -E ".*/benchmarks/.*"; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then pip install --user cpp-coveralls && coveralls --gcov gcov-8 --root .. --build-root . -E ".*/_build_coverage/.*" -E ".*/3rdparty/.*" -E ".*/_.*" -E ".*/tests/.*" -E ".*/benchmarks/.*"; fi
   - popd
 
   - pushd .
