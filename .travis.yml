@@ -20,7 +20,6 @@ addons:
       key_url: 'https://repos.influxdata.com/influxdb.key'
     - ubuntu-toolchain-r-test
     packages:
-    - bazel
     - cmake
     - curl
     - doxygen
@@ -45,46 +44,16 @@ addons:
     - bazelbuild/tap
 
 script:
-  - bazel build //...
-  - bazel test --test_output=all //core/... //pull/...
-#  - bazel test --test_output=all //pull/tests/integration:scrape-test
-#  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then bazel test --test_output=all //pull/tests/integration:lint-test; fi
-  - bazel run -c opt //core/benchmarks
-
-  - pushd .
-  - mkdir _build_internal_deps
-  - cd _build_internal_deps
-  - cmake .. -DUSE_THIRDPARTY_LIBRARIES=ON -DENABLE_WARNINGS_AS_ERRORS=ON
-  - make -j 4
-  - ctest -V
-  - mkdir -p deploy
-  - make DESTDIR=`pwd`/deploy install
-  - popd
-
   - 3rdparty/build_for_travis.sh
   - rm -rf 3rdparty/*
 
   - pushd .
   - mkdir _build_coverage
   - cd _build_coverage
-  - CC="gcc-8" CXX="g++-8" CFLAGS="--coverage" CXXFLAGS="--coverage" LDFLAGS="--coverage" cmake .. -DCMAKE_INSTALL_PREFIX=../_opt -DUSE_THIRDPARTY_LIBRARIES=OFF
+  - CC="gcc-8" CXX="g++-8" cmake .. -DCMAKE_INSTALL_PREFIX=../_opt -DUSE_THIRDPARTY_LIBRARIES=OFF
   - make -j 4
   - ctest -V -LE Benchmark
   - mkdir -p deploy
   - make DESTDIR=`pwd`/deploy install
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then pip install --user cpp-coveralls && coveralls --gcov gcov-8 --root .. --build-root . -E ".*/_build_coverage/.*" -E ".*/3rdparty/.*" -E ".*/_.*" -E ".*/tests/.*" -E ".*/benchmarks/.*"; fi
   - popd
-
-  - pushd .
-  - cd doc
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then doxygen && touch html/.nojekyll; fi
-  - popd
-
-deploy:
-  provider: pages
-  local-dir: doc/html
-  github-token: $GITHUB_TOKEN
-  skip-cleanup: true
-  on:
-    branch: master
-    condition: $TRAVIS_OS_NAME == linux
