@@ -1,5 +1,7 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
-load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
+# Use maybe implementation from "@bazel_tools//tools/build_defs/repo:utils.bzl"
+# once Bazel 0.23 customers are gone.
+load(":maybe.bzl", "maybe")
 
 def prometheus_cpp_repositories():
     maybe(
