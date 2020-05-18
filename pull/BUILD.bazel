@@ -15,8 +15,8 @@ cc_library(
     hdrs = glob(
         ["include/**/*.h"],
     ) + [":export_header"],
-    local_defines = [
-        "HAVE_ZLIB",
+    copts = [
+        "-DHAVE_ZLIB",
     ],
     strip_include_prefix = "include",
     visibility = ["//visibility:public"],
