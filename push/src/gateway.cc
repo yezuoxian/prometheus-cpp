@@ -189,7 +189,7 @@ std::future<int> Gateway::async_push(HttpMethod method) {
 }
 
 int Gateway::Delete() {
-  return performHttpRequest(HttpMethod::Delete, jobUri_, {});
+  return performHttpRequest(HttpMethod::Delete, jobUri_ + labels_, {});
 }
 
 std::future<int> Gateway::AsyncDelete() {
